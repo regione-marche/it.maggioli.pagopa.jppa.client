@@ -39,8 +39,8 @@ Add this dependency to your project's POM:
 
 ```xml
 <dependency>
-  <groupId>io.swagger</groupId>
-  <artifactId>swagger-java-client</artifactId>
+  <groupId>it.maggioli.pagopa.jppa.client</groupId>
+  <artifactId>it.maggioli.pagopa.jppa.client</artifactId>
   <version>1.0.0</version>
   <scope>compile</scope>
 </dependency>
