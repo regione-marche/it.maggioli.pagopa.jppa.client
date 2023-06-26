@@ -1,4 +1,4 @@
-# swagger-java-client
+# jppa-java-client
 
 API Gateway Pagamenti
 - API version: 1.0
