@@ -77,8 +77,8 @@ import okio.Okio;
 
 public class ApiClient {
 
-    private String basePath = "https://collaudopagopa.comune-online.it/jcitygov-pagopa/api";
-
+//    private String basePath = "https://collaudopagopa.comune-online.it/jcitygov-pagopa/api";
+    private String basePath = "https://pagopa-staging.maggioli.cloud/jcitygov-pagopa/api";
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private String tempFolderPath = null;
@@ -86,10 +86,6 @@ public class ApiClient {
     private Map<String, Authentication> authentications;
 
     private DateFormat dateFormat;
-    private DateFormat datetimeFormat;
-    private boolean lenientDatetimeFormat;
-    private int dateLength;
-
     private InputStream sslCaCert;
     private boolean verifyingSsl;
     private KeyManager[] keyManagers;
@@ -996,7 +992,7 @@ public class ApiClient {
         final Request.Builder reqBuilder = new Request.Builder().url(url);
         processHeaderParams(headerParams, reqBuilder);
 
-        String contentType = (String) headerParams.get("Content-Type");
+        String contentType = headerParams.get("Content-Type");
         // ensuring a default content type
         if (contentType == null) {
             contentType = "application/json";

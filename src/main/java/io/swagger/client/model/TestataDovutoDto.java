@@ -14,16 +14,10 @@
 package io.swagger.client.model;
 
 import java.util.Objects;
-import java.util.Arrays;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
+
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.client.model.ContribuenteDto;
-import java.io.IOException;
 
 /**
  * TestataDovutoDto
@@ -43,8 +37,19 @@ public class TestataDovutoDto {
     this.datiContribuente = datiContribuente;
     return this;
   }
+  
+	public TestataDovutoDto() {
+		super();
+	}
 
-   /**
+	public TestataDovutoDto(ContribuenteDto datiContribuente, String dettaglioPosizione, String idPos) {
+		super();
+		this.datiContribuente = datiContribuente;
+		this.dettaglioPosizione = dettaglioPosizione;
+		this.idPos = idPos;
+	}
+
+/**
    * Get datiContribuente
    * @return datiContribuente
   **/

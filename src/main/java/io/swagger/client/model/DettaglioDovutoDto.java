@@ -13,23 +13,21 @@
 
 package io.swagger.client.model;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Arrays;
+
+import org.threeten.bp.OffsetDateTime;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.client.model.DatoAccertamentoDto;
-import io.swagger.client.model.MarcaDaBolloDto;
-import io.swagger.client.model.ParametroDebitoDto;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import org.threeten.bp.OffsetDateTime;
 
 /**
  * DettaglioDovutoDto
@@ -49,7 +47,7 @@ public class DettaglioDovutoDto {
    * Codice che raggruppa tutte le parametrizzazioni semanticamente omogeneo di debiti. Identifica tipicamente un tributo o più in generale un onere che l’utente finale ha maturato nei confronti della pubblica amministrazione, max 1000 caratteri
    */
   @JsonAdapter(CodiceTipoDebitoEnum.Adapter.class)
-  public enum CodiceTipoDebitoEnum {
+  public enum CodiceTipoDebitoEnum {	  
     CASE_POPOLARI_AFFITTO("CASE_POPOLARI_AFFITTO"),
     
     CIMITERI_SERVIZO("CIMITERI_SERVIZO"),
@@ -98,8 +96,20 @@ public class DettaglioDovutoDto {
     
     ZTL_RESIDENTE("ZTL_RESIDENTE"),
     
-    ZTL_TEMPORANEA("ZTL_TEMPORANEA");
-
+    ZTL_TEMPORANEA("ZTL_TEMPORANEA"),
+    
+    TARI("TARI"),
+    
+    TAR("TAR"),
+    
+    AVV("AVV"),
+    
+    AAA("AAA"),
+    
+    PGP("PGP"),
+    
+    BOL("BOL");
+  
     private String value;
 
     CodiceTipoDebitoEnum(String value) {

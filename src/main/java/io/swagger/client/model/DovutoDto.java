@@ -10,215 +10,473 @@
  * Do not edit the class manually.
  */
 
-
 package io.swagger.client.model;
 
-import java.util.Objects;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
+
+import com.esed.payer.archiviocarichi.webservice.integraecdifferito.dati.Anagrafica;
+import com.esed.payer.archiviocarichi.webservice.integraecdifferito.dati.Tributo;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.seda.payer.core.bean.ConfigurazioneBlackBoxPos;
+import com.seda.payer.estrattoconto_csv.model.ArchivioCarichiDocumentoEC;
+import com.seda.payer.estrattoconto_csv.model.ArchivioCarichiTributoEC;
+import com.seda.payer.integraente.webservice.dati.RecuperaDatiBollettinoResponse;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.client.model.DettaglioDovutoDto;
-import io.swagger.client.model.NumeroAvvisoDto;
-import io.swagger.client.model.TestataDovutoDto;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import io.swagger.client.model.ContribuenteDto.TipoIdentificativoUnivocoEnum;
+import io.swagger.client.model.DettaglioDovutoDto.CodiceTipoDebitoEnum;
+import io.swagger.client.model.DettaglioDovutoDto.SpeseNotificaDaAttualizzareEnum;  
 
 /**
- * Composto da un’unica testata e la lista dei DettaglioDovuto specifici del Beneficiario
+ * Composto da un’unica testata e la lista dei DettaglioDovuto specifici del
+ * Beneficiario
  */
 @ApiModel(description = "Composto da un’unica testata e la lista dei DettaglioDovuto specifici del Beneficiario")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2023-06-23T07:57:29.055Z")
 public class DovutoDto {
-  /**
-   * Indica se mono o multibeneficiario
-   */
-  @JsonAdapter(ContestoDovutoEnum.Adapter.class)
-  public enum ContestoDovutoEnum {
-    MONOBENEFICIARIO("MONOBENEFICIARIO"),
-    
-    MULTIBENEFICIARIO("MULTIBENEFICIARIO");
+	/**
+	 * Indica se mono o multibeneficiario
+	 */
+	@JsonAdapter(ContestoDovutoEnum.Adapter.class)
+	public enum ContestoDovutoEnum {
+		MONOBENEFICIARIO("MONOBENEFICIARIO"),
 
-    private String value;
+		MULTIBENEFICIARIO("MULTIBENEFICIARIO");
 
-    ContestoDovutoEnum(String value) {
-      this.value = value;
-    }
+		private String value;
 
-    public String getValue() {
-      return value;
-    }
+		ContestoDovutoEnum(String value) {
+			this.value = value;
+		}
 
-    @Override
-    public String toString() {
-      return String.valueOf(value);
-    }
+		public String getValue() {
+			return value;
+		}
+		
+		@Override
+		public String toString() {
+			return String.valueOf(value);
+		}
 
-    public static ContestoDovutoEnum fromValue(String text) {
-      for (ContestoDovutoEnum b : ContestoDovutoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
+		public static ContestoDovutoEnum fromValue(String text) {
+			for (ContestoDovutoEnum b : ContestoDovutoEnum.values()) {
+				if (String.valueOf(b.value).equals(text)) {
+					return b;
+				}
+			}
+			return null;
+		}
 
-    public static class Adapter extends TypeAdapter<ContestoDovutoEnum> {
-      @Override
-      public void write(final JsonWriter jsonWriter, final ContestoDovutoEnum enumeration) throws IOException {
-        jsonWriter.value(enumeration.getValue());
-      }
+		public static class Adapter extends TypeAdapter<ContestoDovutoEnum> {
+			@Override
+			public void write(final JsonWriter jsonWriter, final ContestoDovutoEnum enumeration) throws IOException {
+				jsonWriter.value(enumeration.getValue());
+			}
 
-      @Override
-      public ContestoDovutoEnum read(final JsonReader jsonReader) throws IOException {
-        String value = jsonReader.nextString();
-        return ContestoDovutoEnum.fromValue(String.valueOf(value));
-      }
-    }
-  }
+			@Override
+			public ContestoDovutoEnum read(final JsonReader jsonReader) throws IOException {
+				String value = jsonReader.nextString();
+				return ContestoDovutoEnum.fromValue(String.valueOf(value));
+			}
+		}
+	}
+	
+	@SerializedName("contestoDovuto")
+	private ContestoDovutoEnum contestoDovuto = null;
 
-  @SerializedName("contestoDovuto")
-  private ContestoDovutoEnum contestoDovuto = null;
+	@SerializedName("dettaglioDovuto")
+	private List<DettaglioDovutoDto> dettaglioDovuto = null;
 
-  @SerializedName("dettaglioDovuto")
-  private List<DettaglioDovutoDto> dettaglioDovuto = null;
+	@SerializedName("numeroAvviso")
+	private NumeroAvvisoDto numeroAvviso = null;
 
-  @SerializedName("numeroAvviso")
-  private NumeroAvvisoDto numeroAvviso = null;
+	@SerializedName("testataDovuto")
+	private TestataDovutoDto testataDovuto = null;
+	
+	
+	public DovutoDto() {
+	}
+	
+	public DovutoDto(ContestoDovutoEnum contestoDovuto) {
+		this.contestoDovuto = contestoDovuto;
+	}
+	
+	// Payer Web e CaricaIUV
+	public DovutoDto(ConfigurazioneBlackBoxPos d, String codiceIpa) {
+		this.setContestoDovuto(ContestoDovutoEnum.MONOBENEFICIARIO); 
+		
+		DettaglioDovutoDto dettaglio = new DettaglioDovutoDto();
 
-  @SerializedName("testataDovuto")
-  private TestataDovutoDto testataDovuto = null;
+		// TODO: da aggiungere		
+//		dettaglio.setCodiceLotto(null);
+//		dettaglio.setDataLimitePagabilita(null);
+		dettaglio.setCausaleDebito(d.getCausaleServizio());  
+		dettaglio.setCodiceIpaCreditore(codiceIpa); 
+		dettaglio.setCodiceTipoDebito(CodiceTipoDebitoEnum.fromValue(d.getCodiceTipologiaServizio())); 		
+		dettaglio.setDataFineValidita(OffsetDateTime.parse(d.getDataScadenza().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME));  
+		dettaglio.setDataInizioValidita(OffsetDateTime.parse(d.getDataCreazione().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME)); 
+ 		dettaglio.setGruppo("1"); 
+		dettaglio.setIdDeb(d.getCodiceIdentificativoDominio().trim() + d.getNumeroAvviso().trim()); 
+		dettaglio.setImportoDebito(new Double(d.getImporto()) / 100D);
+		dettaglio.setOrdinamento(1);
+		
+		DatoAccertamentoDto datoAccertamento = new DatoAccertamentoDto();
+		datoAccertamento.setCodiceAccertamento(CodiceTipoDebitoEnum.fromValue(d.getCodiceTipologiaServizio()).getValue()); 
+		datoAccertamento.setImportoAccertamento(BigDecimal.valueOf(d.getImporto() / 100D));
+		
+		// TODO: da aggiungere
+		datoAccertamento.setAnnoAccertamento(d.getAnnoRif());
+//		datoAccertamento.setDescrizioneAccertamento(null);
+		dettaglio.setDatiAccertamento(Arrays.asList(datoAccertamento));
+		this.setDettaglioDovuto(Arrays.asList(dettaglio));
 
-  public DovutoDto contestoDovuto(ContestoDovutoEnum contestoDovuto) {
-    this.contestoDovuto = contestoDovuto;
-    return this;
-  }
+		ContribuenteDto contribuente = new ContribuenteDto();
+		
+		// TODO: da aggiungere
+		contribuente.setCap(d.getCittaCAP() != null ? d.getCittaCAP() : null);
+		contribuente.localita(d.getLocalitaContribuente() != null ? d.getLocalitaContribuente() : null);
+		contribuente.setIndirizzo(d.getIndirizzoContribuente() != null ? d.getIndirizzoContribuente() : null);
+		contribuente.setProvincia(d.getProvinciaContribuente() != null ? d.getProvinciaContribuente() : null);
+		
+//		contribuente.setNome(null);    WEB OK | caricaIUV no
+//		contribuente.setCognome(null); WEB OK | caricaIUV no
+//		contribuente.setCivico(null);  WEB no | caricaIUV no
+//		contribuente.setNazione(null); WEB no | caricaIUV no
+//		contribuente.setEmail(null);   WEB no | caricaIUV no
+		
+		if(d.getCodiceFiscale().length() < 16) {
+			contribuente.setRagioneSociale(d.getDenominazioneDebitore());
+		}
+		contribuente.setTipoIdentificativoUnivoco(d.getCodiceFiscale().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
+		contribuente.setCodiceIdentificativoUnivoco(d.getCodiceFiscale());
 
-   /**
-   * Indica se mono o multibeneficiario
-   * @return contestoDovuto
-  **/
-  @ApiModelProperty(example = "MONOBENEFICIARIO", value = "Indica se mono o multibeneficiario")
-  public ContestoDovutoEnum getContestoDovuto() {
-    return contestoDovuto;
-  }
+		TestataDovutoDto testata = new TestataDovutoDto(contribuente, d.getCausaleServizio(), d.getCodiceIdentificativoDominio().trim() + d.getNumeroAvviso().trim()); 
+		this.setTestataDovuto(testata);
+		
+		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, d.getNumeroAvviso(), 1);
+		this.setNumeroAvviso(numeroAvvisoDto);
+	}
 
-  public void setContestoDovuto(ContestoDovutoEnum contestoDovuto) {
-    this.contestoDovuto = contestoDovuto;
-  }
+	// Archivio Carichi
+	public DovutoDto(RecuperaDatiBollettinoResponse pgResponse, String codiceIpaComune, String codiceIpaProvincia, List<Tributo> listTributi, Anagrafica anagrafica) {
+		this.setContestoDovuto(pgResponse.getFlagMultiBeneficiario() ? ContestoDovutoEnum.MULTIBENEFICIARIO : ContestoDovutoEnum.MONOBENEFICIARIO); 
+		List<DettaglioDovutoDto> dettaglioList = new ArrayList<>();
+		int progressivo = 1;
+		for(Tributo tributo : listTributi) {
+			DettaglioDovutoDto dettaglio = new DettaglioDovutoDto();
+			dettaglio.setCausaleDebito(pgResponse.getCausale());   
+			
+			// TODO: da aggiungere		
+//			dettaglio.setDataLimitePagabilita(null);
+//			dettaglio.setDataFineValidita(null);
+			dettaglio.setSpeseNotificaDaAttualizzare(SpeseNotificaDaAttualizzareEnum.OFF);
+			
+			if(pgResponse.getFlagMultiBeneficiario()) {
+				dettaglio.setCodiceIpaCreditore(progressivo == 1 ? codiceIpaComune : codiceIpaProvincia); 
+			} else {
+				dettaglio.setCodiceIpaCreditore(codiceIpaComune); 
+			}
+			dettaglio.setCodiceTipoDebito(CodiceTipoDebitoEnum.fromValue(pgResponse.getTipologiaServizio())); 	
+			dettaglio.setDataInizioValidita(this.getCurrentDateCalendar()); 
+	 		dettaglio.setGruppo("unica"); 
+			dettaglio.setIdDeb(pgResponse.getIdentificativoUnivocoVersamento()+pgResponse.getIdentificativoBollettino()); 
+			dettaglio.setImportoDebito(tributo.getImpTributo().doubleValue() / 100D);
+			dettaglio.setOrdinamento(progressivo); 
+//			dettaglio.setCodiceLotto("0112233445"+progressivo);			
+			DatoAccertamentoDto datoAccertamento = new DatoAccertamentoDto();
+			datoAccertamento.setImportoAccertamento(BigDecimal.valueOf(tributo.getImpTributo().doubleValue() / 100D));
+			datoAccertamento.setCodiceAccertamento(CodiceTipoDebitoEnum.fromValue(pgResponse.getTipologiaServizio()).getValue());
+			datoAccertamento.setAnnoAccertamento(tributo.getAnnoTributo());			
+			dettaglio.setDatiAccertamento(Arrays.asList(datoAccertamento));
+			
+			dettaglioList.add(dettaglio);
+			progressivo++;
+		}
+		
+		this.setDettaglioDovuto(dettaglioList);
 
-  public DovutoDto dettaglioDovuto(List<DettaglioDovutoDto> dettaglioDovuto) {
-    this.dettaglioDovuto = dettaglioDovuto;
-    return this;
-  }
+		ContribuenteDto contribuente = new ContribuenteDto();
+		if(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().length() < 16) {
+			contribuente.setRagioneSociale(pgResponse.getAnagraficaBollettino().getIntestatario());
+		}  else {
+//			contribuente.setNome(null);
+			contribuente.setCognome(anagrafica.getDenominazione() != null ? anagrafica.getDenominazione() : null);
+		}
+		contribuente.setTipoIdentificativoUnivoco(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
+		contribuente.setCodiceIdentificativoUnivoco(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().toUpperCase());
+		
+		// TODO: da aggiungere
+//		contribuente.setCap(null);
+//		contribuente.setCivico(null);
+//		contribuente.setNazione(null);
+//		contribuente.setProvincia(null);
+		contribuente.setEmail(anagrafica.getEmail() != null ? anagrafica.getEmail() : null);
+		contribuente.setIndirizzo(anagrafica.getIndirizzoFiscale() != null ? anagrafica.getIndirizzoFiscale() : null);
+		contribuente.localita(anagrafica.getEmail() != null ? anagrafica.getEmail() : null);
 
-  public DovutoDto addDettaglioDovutoItem(DettaglioDovutoDto dettaglioDovutoItem) {
-    if (this.dettaglioDovuto == null) {
-      this.dettaglioDovuto = new ArrayList<DettaglioDovutoDto>();
-    }
-    this.dettaglioDovuto.add(dettaglioDovutoItem);
-    return this;
-  }
+		TestataDovutoDto testata = new TestataDovutoDto(contribuente, pgResponse.getCausale(), pgResponse.getIdentificativoUnivocoVersamento() + pgResponse.getIdentificativoBollettino()); 
+		this.setTestataDovuto(testata);
+		
+		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, pgResponse.getIdentificativoBollettino(), 1);
+		this.setNumeroAvviso(numeroAvvisoDto);
+	}
+	
+	private OffsetDateTime getCurrentDateCalendar() {
+		return OffsetDateTime.parse(Calendar.getInstance().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+	}
 
-   /**
-   * Get dettaglioDovuto
-   * @return dettaglioDovuto
-  **/
-  @ApiModelProperty(value = "")
-  public List<DettaglioDovutoDto> getDettaglioDovuto() {
-    return dettaglioDovuto;
-  }
+	// Archivio Carichi
+	public DovutoDto(RecuperaDatiBollettinoResponse pgResponse, Anagrafica anagrafica) {		
+		this.setContestoDovuto(pgResponse.getFlagMultiBeneficiario() ? ContestoDovutoEnum.MULTIBENEFICIARIO : ContestoDovutoEnum.MONOBENEFICIARIO); 
+		ContribuenteDto contribuente = new ContribuenteDto();
+		if(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().length() < 16) {
+			contribuente.setRagioneSociale(pgResponse.getAnagraficaBollettino().getIntestatario());
+		} else {
+//			contribuente.setNome(null);
+			contribuente.setCognome(anagrafica.getDenominazione() != null ? anagrafica.getDenominazione() : null);
+		}
+		contribuente.setTipoIdentificativoUnivoco(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
+		contribuente.setCodiceIdentificativoUnivoco(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().toUpperCase());
 
-  public void setDettaglioDovuto(List<DettaglioDovutoDto> dettaglioDovuto) {
-    this.dettaglioDovuto = dettaglioDovuto;
-  }
+		// TODO: da aggiungere
+//		contribuente.setCap(null);
+//		contribuente.setCivico(null);
+//		contribuente.setNazione(null);
+//		contribuente.setProvincia(null);
 
-  public DovutoDto numeroAvviso(NumeroAvvisoDto numeroAvviso) {
-    this.numeroAvviso = numeroAvviso;
-    return this;
-  }
+		contribuente.setEmail(anagrafica.getEmail() != null ? anagrafica.getEmail() : null);
+		contribuente.setIndirizzo(anagrafica.getIndirizzoFiscale() != null ? anagrafica.getIndirizzoFiscale() : null);
+		contribuente.localita(anagrafica.getEmail() != null ? anagrafica.getEmail() : null);
+		
+		TestataDovutoDto testata = new TestataDovutoDto(contribuente, pgResponse.getCausale(), pgResponse.getIdentificativoUnivocoVersamento()+pgResponse.getAnagraficaBollettino().getNumeroDocumento()); 
+		this.setTestataDovuto(testata);
+		
+		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, pgResponse.getAnagraficaBollettino().getNumeroDocumento(), 1);
+		this.setNumeroAvviso(numeroAvvisoDto);
+	}
+	
+	// EstrattoConto CSV
+	public DovutoDto(ArchivioCarichiDocumentoEC documento, Boolean isMultiBeneficiario) {
+		this.setContestoDovuto(isMultiBeneficiario ? ContestoDovutoEnum.MULTIBENEFICIARIO : ContestoDovutoEnum.MONOBENEFICIARIO); 
+		ContribuenteDto contribuente = new ContribuenteDto();
+		contribuente.setTipoIdentificativoUnivoco(documento.getCodiceFiscale().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
+		contribuente.setCodiceIdentificativoUnivoco(documento.getCodiceFiscale().toUpperCase());
+		// TODO: da aggiungere
+//		contribuente.setCap(null);
+//		contribuente.setCivico(null);
+//		contribuente.setCognome(null);
+//		contribuente.setEmail(null);
+//		contribuente.setIndirizzo(null);
+//		contribuente.localita(null);
+//		contribuente.setNazione(null);
+//		contribuente.setNome(null);
+		
+		TestataDovutoDto testata = new TestataDovutoDto(contribuente, documento.getCausale(), documento.getIdentificativoUnivocoVersamento()+documento.getNumeroDocumento()); 
+		this.setTestataDovuto(testata);
+	}
+	
+	// EstrattoConto CSV
+	public DovutoDto(ArchivioCarichiDocumentoEC documento, String codiceIpaComune, String codiceIpaProvincia, Collection<ArchivioCarichiTributoEC> listTributi, Boolean isMultiBeneficiario) {
+		this.setContestoDovuto(isMultiBeneficiario ? ContestoDovutoEnum.MULTIBENEFICIARIO : ContestoDovutoEnum.MONOBENEFICIARIO); 
+		List<DettaglioDovutoDto> dettaglioList = new ArrayList<>();
+		int progressivo = 1;
+		for(ArchivioCarichiTributoEC tributo : listTributi) {
+			DettaglioDovutoDto dettaglio = new DettaglioDovutoDto();
+			dettaglio.setCausaleDebito(documento.getCausale());   
+			
+			if(isMultiBeneficiario) {
+				dettaglio.setCodiceIpaCreditore(progressivo == 1 ? "c_g479" : "p_PU"); // codiceIpaComune : codiceIpaProvincia
+			} else {
+				dettaglio.setCodiceIpaCreditore(codiceIpaComune); //  "EntTest1"
+			}
+			
+			// TODO: da aggiungere		
+//			dettaglio.setDataLimitePagabilita(null);
+//			dettaglio.setDataFineValidita(null);
+//			dettaglio.setImportoSpeseNotifica(null);
+//			dettaglio.setMarcaDaBollo(null);
+//			dettaglio.setParametriDebito(null);
+//			dettaglio.setSpeseNotificaDaAttualizzare(null);
+			
+			dettaglio.setCodiceTipoDebito(CodiceTipoDebitoEnum.TARI); // CodiceTipoDebitoEnum.fromValue(pgResponse.getTipologiaServizio()) 		
+			dettaglio.setDataInizioValidita(this.getCurrentDateCalendar()); 
+	 		dettaglio.setGruppo("unica"); 
+			dettaglio.setIdDeb(documento.getIdentificativoUnivocoVersamento()+documento.getNumeroDocumento()); 
+			dettaglio.setImportoDebito(tributo.getImpTributo().doubleValue() / 100D);
+			dettaglio.setOrdinamento(progressivo); 
+			dettaglio.setCodiceLotto("0112233445"+progressivo);		
+			DatoAccertamentoDto datoAccertamento = new DatoAccertamentoDto();
+			datoAccertamento.setImportoAccertamento(tributo.getImpTributo());
+			datoAccertamento.setCodiceAccertamento(CodiceTipoDebitoEnum.MULTE.getValue());
+			datoAccertamento.setAnnoAccertamento(documento.getAnnoEmissione());
+//			datoAccertamento.setDescrizioneAccertamento(documento);
+			
+			dettaglio.setDatiAccertamento(Arrays.asList(datoAccertamento));
+			dettaglioList.add(dettaglio);
+			progressivo++;
+		}
+		
+		this.setDettaglioDovuto(dettaglioList);
 
-   /**
-   * Get numeroAvviso
-   * @return numeroAvviso
-  **/
-  @ApiModelProperty(value = "")
-  public NumeroAvvisoDto getNumeroAvviso() {
-    return numeroAvviso;
-  }
+		ContribuenteDto contribuente = new ContribuenteDto();
+		contribuente.setTipoIdentificativoUnivoco(documento.getCodiceFiscale().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
+		contribuente.setCodiceIdentificativoUnivoco(documento.getCodiceFiscale().toUpperCase());
+		// TODO: da aggiungere
+//		contribuente.setCap(null);
+//		contribuente.setCivico(null);
+//		contribuente.setCognome(null);
+//		contribuente.setEmail(null);
+//		contribuente.setIndirizzo(null);
+//		contribuente.localita(null);
+//		contribuente.setNazione(null);
+//		contribuente.setNome(null);
+//		contribuente.setProvincia(null);
+		
+		TestataDovutoDto testata = new TestataDovutoDto(contribuente, documento.getCausale(), documento.getIdentificativoUnivocoVersamento()+documento.getNumeroDocumento()); 
+		this.setTestataDovuto(testata);
+	}
+	
+	public DovutoDto contestoDovuto(ContestoDovutoEnum contestoDovuto) {
+		this.contestoDovuto = contestoDovuto;
+		return this;
+	}
+	/**
+	 * Indica se mono o multibeneficiario
+	 * 
+	 * @return contestoDovuto
+	 **/
+	@ApiModelProperty(example = "MONOBENEFICIARIO", value = "Indica se mono o multibeneficiario")
+	public ContestoDovutoEnum getContestoDovuto() {
+		return contestoDovuto;
+	}
 
-  public void setNumeroAvviso(NumeroAvvisoDto numeroAvviso) {
-    this.numeroAvviso = numeroAvviso;
-  }
+	public void setContestoDovuto(ContestoDovutoEnum contestoDovuto) {
+		this.contestoDovuto = contestoDovuto;
+	}
 
-  public DovutoDto testataDovuto(TestataDovutoDto testataDovuto) {
-    this.testataDovuto = testataDovuto;
-    return this;
-  }
+	public DovutoDto dettaglioDovuto(List<DettaglioDovutoDto> dettaglioDovuto) {
+		this.dettaglioDovuto = dettaglioDovuto;
+		return this;
+	}
 
-   /**
-   * Get testataDovuto
-   * @return testataDovuto
-  **/
-  @ApiModelProperty(value = "")
-  public TestataDovutoDto getTestataDovuto() {
-    return testataDovuto;
-  }
+	public DovutoDto addDettaglioDovutoItem(DettaglioDovutoDto dettaglioDovutoItem) {
+		if (this.dettaglioDovuto == null) {
+			this.dettaglioDovuto = new ArrayList<DettaglioDovutoDto>();
+		}
+		this.dettaglioDovuto.add(dettaglioDovutoItem);
+		return this;
+	}
 
-  public void setTestataDovuto(TestataDovutoDto testataDovuto) {
-    this.testataDovuto = testataDovuto;
-  }
+	/**
+	 * Get dettaglioDovuto
+	 * 
+	 * @return dettaglioDovuto
+	 **/
+	@ApiModelProperty(value = "")
+	public List<DettaglioDovutoDto> getDettaglioDovuto() {
+		return dettaglioDovuto;
+	}
 
+	public void setDettaglioDovuto(List<DettaglioDovutoDto> dettaglioDovuto) {
+		this.dettaglioDovuto = dettaglioDovuto;
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    DovutoDto dovutoDto = (DovutoDto) o;
-    return Objects.equals(this.contestoDovuto, dovutoDto.contestoDovuto) &&
-        Objects.equals(this.dettaglioDovuto, dovutoDto.dettaglioDovuto) &&
-        Objects.equals(this.numeroAvviso, dovutoDto.numeroAvviso) &&
-        Objects.equals(this.testataDovuto, dovutoDto.testataDovuto);
-  }
+	public DovutoDto numeroAvviso(NumeroAvvisoDto numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+		return this;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(contestoDovuto, dettaglioDovuto, numeroAvviso, testataDovuto);
-  }
+	/**
+	 * Get numeroAvviso
+	 * 
+	 * @return numeroAvviso
+	 **/
+	@ApiModelProperty(value = "")
+	public NumeroAvvisoDto getNumeroAvviso() {
+		return numeroAvviso;
+	}
 
+	public void setNumeroAvviso(NumeroAvvisoDto numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class DovutoDto {\n");
-    
-    sb.append("    contestoDovuto: ").append(toIndentedString(contestoDovuto)).append("\n");
-    sb.append("    dettaglioDovuto: ").append(toIndentedString(dettaglioDovuto)).append("\n");
-    sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
-    sb.append("    testataDovuto: ").append(toIndentedString(testataDovuto)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+	public DovutoDto testataDovuto(TestataDovutoDto testataDovuto) {
+		this.testataDovuto = testataDovuto;
+		return this;
+	}
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+	/**
+	 * Get testataDovuto
+	 * 
+	 * @return testataDovuto
+	 **/
+	@ApiModelProperty(value = "")
+	public TestataDovutoDto getTestataDovuto() {
+		return testataDovuto;
+	}
+
+	public void setTestataDovuto(TestataDovutoDto testataDovuto) {
+		this.testataDovuto = testataDovuto;
+	}
+
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DovutoDto dovutoDto = (DovutoDto) o;
+		return Objects.equals(this.contestoDovuto, dovutoDto.contestoDovuto)
+				&& Objects.equals(this.dettaglioDovuto, dovutoDto.dettaglioDovuto)
+				&& Objects.equals(this.numeroAvviso, dovutoDto.numeroAvviso)
+				&& Objects.equals(this.testataDovuto, dovutoDto.testataDovuto);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(contestoDovuto, dettaglioDovuto, numeroAvviso, testataDovuto);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class DovutoDto {\n");
+
+		sb.append("    contestoDovuto: ").append(toIndentedString(contestoDovuto)).append("\n");
+		sb.append("    dettaglioDovuto: ").append(toIndentedString(dettaglioDovuto)).append("\n");
+		sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
+		sb.append("    testataDovuto: ").append(toIndentedString(testataDovuto)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
 
 }
-

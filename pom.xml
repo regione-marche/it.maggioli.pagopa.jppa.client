@@ -5,7 +5,7 @@
     <artifactId>it.maggioli.pagopa.jppa.client</artifactId>
     <packaging>jar</packaging>
     <name>it.maggioli.pagopa.jppa.client</name>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <description>it.maggioli.pagopa.jppa.client client di chiamata verso JPPA</description>
     <!--<scm>
         <connection>scm:git:git@github.com:swagger-api/swagger-codegen.git</connection>
@@ -35,9 +35,8 @@
       <relativePath/>
    </parent>
 	
-
-    
-
+	
+	
     <build>
         <plugins>
             <plugin>
@@ -196,10 +195,10 @@
 
     <dependencies>
 		<dependency>
-    <groupId>javax.annotation</groupId>
-    <artifactId>javax.annotation-api</artifactId>
-    <version>1.3.2</version>
-</dependency>
+		    <groupId>javax.annotation</groupId>
+		    <artifactId>javax.annotation-api</artifactId>
+		    <version>1.3.2</version>
+		</dependency>
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
@@ -225,11 +224,41 @@
             <artifactId>gson-fire</artifactId>
             <version>${gson-fire-version}</version>
         </dependency>
-            <dependency>
-                <groupId>org.threeten</groupId>
-                <artifactId>threetenbp</artifactId>
-                <version>${threetenbp-version}</version>
-            </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threetenbp</artifactId>
+            <version>${threetenbp-version}</version>
+        </dependency>
+            
+        <dependency>
+			<groupId>com.seda.payer.core</groupId>
+			<artifactId>com.seda.payer.core</artifactId>
+			<version>2.10.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.esed.payer.archiviocarichi.webservice.client</groupId>
+			<artifactId>com.esed.payer.archiviocarichi.webservice.client</artifactId>
+			<version>2.3.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.seda.payer.integraente.webservice.client</groupId>
+			<artifactId>com.seda.payer.integraente.webservice.client</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.seda.payer.estrattoconto_csv</groupId>
+			<artifactId>com.seda.payer.estrattoconto_csv</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.seda.payer.pgec.webservice.client</groupId>
+			<artifactId>
+				com.seda.payer.pgec.webservice.client
+			</artifactId>
+			<version>2.8.0</version>
+		</dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -237,6 +266,7 @@
             <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
     <properties>
         <java.version>1.8</java.version>

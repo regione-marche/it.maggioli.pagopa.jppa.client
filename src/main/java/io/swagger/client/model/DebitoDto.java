@@ -13,24 +13,22 @@
 
 package io.swagger.client.model;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Arrays;
+
+import org.threeten.bp.OffsetDateTime;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
+import com.seda.payer.core.bean.ConfigurazioneBlackBoxPos;
+
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.client.model.ContribuenteDto;
-import io.swagger.client.model.DatoAccertamentoDto;
-import io.swagger.client.model.MarcaDaBolloDto;
-import io.swagger.client.model.ParametroDebitoDto;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import org.threeten.bp.OffsetDateTime;
 
 /**
  * DebitoDto
@@ -427,6 +425,10 @@ public class DebitoDto {
 
   @SerializedName("versioneNumeroAvviso")
   private Integer versioneNumeroAvviso = null;
+
+  public DebitoDto(ConfigurazioneBlackBoxPos posDaInviare) {
+	// TODO Auto-generated constructor stub
+  }
 
   public DebitoDto attivaDebito(Boolean attivaDebito) {
     this.attivaDebito = attivaDebito;

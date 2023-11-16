@@ -13,19 +13,18 @@
 
 package io.swagger.client.model;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Arrays;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.client.model.DovutoDto;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * RichiestaInviaDovutiRestDto
@@ -438,7 +437,10 @@ public class RichiestaInviaDovutiRestDto {
     
     VOTIVE("VOTIVE"),
     
-    ZTL("ZTL");
+    ZTL("ZTL"), 
+    
+    PAGONET23("PAGONET23");
+
 
     private String value;
 
@@ -485,9 +487,20 @@ public class RichiestaInviaDovutiRestDto {
   private List<DovutoDto> dovuti = null;
 
   @SerializedName("transactional")
-  private Boolean transactional = null;
+  private Boolean transactional = null;  
 
-  public RichiestaInviaDovutiRestDto codiceIPA(String codiceIPA) {
+public RichiestaInviaDovutiRestDto() {
+	super();
+}
+
+public RichiestaInviaDovutiRestDto(String codiceIPA, CodiceServizioEnum codiceServizio, List<DovutoDto> dovuti) {
+	super();
+	this.codiceIPA = codiceIPA;
+	this.codiceServizio = codiceServizio;
+	this.dovuti = dovuti;
+}
+
+public RichiestaInviaDovutiRestDto codiceIPA(String codiceIPA) {
     this.codiceIPA = codiceIPA;
     return this;
   }
