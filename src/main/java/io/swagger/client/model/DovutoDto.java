@@ -18,7 +18,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,8 +32,6 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.seda.payer.core.bean.ConfigurazioneBlackBoxPos;
-import com.seda.payer.estrattoconto_csv.model.ArchivioCarichiDocumentoEC;
-import com.seda.payer.estrattoconto_csv.model.ArchivioCarichiTributoEC;
 import com.seda.payer.integraente.webservice.dati.RecuperaDatiBollettinoResponse;
 
 import io.swagger.annotations.ApiModel;
@@ -50,6 +47,7 @@ import io.swagger.client.model.DettaglioDovutoDto.SpeseNotificaDaAttualizzareEnu
 @ApiModel(description = "Composto da un’unica testata e la lista dei DettaglioDovuto specifici del Beneficiario")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2023-06-23T07:57:29.055Z")
 public class DovutoDto {
+	
 	/**
 	 * Indica se mono o multibeneficiario
 	 */
@@ -108,11 +106,19 @@ public class DovutoDto {
 
 	@SerializedName("testataDovuto")
 	private TestataDovutoDto testataDovuto = null;
-	
-	
+		
 	public DovutoDto() {
 	}
 	
+	public DovutoDto(ContestoDovutoEnum contestoDovuto, List<DettaglioDovutoDto> dettaglioDovuto,
+			NumeroAvvisoDto numeroAvviso, TestataDovutoDto testataDovuto) {
+		super();
+		this.contestoDovuto = contestoDovuto;
+		this.dettaglioDovuto = dettaglioDovuto;
+		this.numeroAvviso = numeroAvviso;
+		this.testataDovuto = testataDovuto;
+	}
+
 	public DovutoDto(ContestoDovutoEnum contestoDovuto) {
 		this.contestoDovuto = contestoDovuto;
 	}
@@ -269,87 +275,6 @@ public class DovutoDto {
 		
 		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, pgResponse.getAnagraficaBollettino().getNumeroDocumento(), 1);
 		this.setNumeroAvviso(numeroAvvisoDto);
-	}
-	
-	// EstrattoConto CSV
-	public DovutoDto(ArchivioCarichiDocumentoEC documento, Boolean isMultiBeneficiario) {
-		this.setContestoDovuto(isMultiBeneficiario ? ContestoDovutoEnum.MULTIBENEFICIARIO : ContestoDovutoEnum.MONOBENEFICIARIO); 
-		ContribuenteDto contribuente = new ContribuenteDto();
-		contribuente.setTipoIdentificativoUnivoco(documento.getCodiceFiscale().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
-		contribuente.setCodiceIdentificativoUnivoco(documento.getCodiceFiscale().toUpperCase());
-		// TODO: da aggiungere
-//		contribuente.setCap(null);
-//		contribuente.setCivico(null);
-//		contribuente.setCognome(null);
-//		contribuente.setEmail(null);
-//		contribuente.setIndirizzo(null);
-//		contribuente.localita(null);
-//		contribuente.setNazione(null);
-//		contribuente.setNome(null);
-		
-		TestataDovutoDto testata = new TestataDovutoDto(contribuente, documento.getCausale(), documento.getIdentificativoUnivocoVersamento()+documento.getNumeroDocumento()); 
-		this.setTestataDovuto(testata);
-	}
-	
-	// EstrattoConto CSV
-	public DovutoDto(ArchivioCarichiDocumentoEC documento, String codiceIpaComune, String codiceIpaProvincia, Collection<ArchivioCarichiTributoEC> listTributi, Boolean isMultiBeneficiario) {
-		this.setContestoDovuto(isMultiBeneficiario ? ContestoDovutoEnum.MULTIBENEFICIARIO : ContestoDovutoEnum.MONOBENEFICIARIO); 
-		List<DettaglioDovutoDto> dettaglioList = new ArrayList<>();
-		int progressivo = 1;
-		for(ArchivioCarichiTributoEC tributo : listTributi) {
-			DettaglioDovutoDto dettaglio = new DettaglioDovutoDto();
-			dettaglio.setCausaleDebito(documento.getCausale());   
-			
-			if(isMultiBeneficiario) {
-				dettaglio.setCodiceIpaCreditore(progressivo == 1 ? "c_g479" : "p_PU"); // codiceIpaComune : codiceIpaProvincia
-			} else {
-				dettaglio.setCodiceIpaCreditore(codiceIpaComune); //  "EntTest1"
-			}
-			
-			// TODO: da aggiungere		
-//			dettaglio.setDataLimitePagabilita(null);
-//			dettaglio.setDataFineValidita(null);
-//			dettaglio.setImportoSpeseNotifica(null);
-//			dettaglio.setMarcaDaBollo(null);
-//			dettaglio.setParametriDebito(null);
-//			dettaglio.setSpeseNotificaDaAttualizzare(null);
-			
-			dettaglio.setCodiceTipoDebito(CodiceTipoDebitoEnum.TARI); // CodiceTipoDebitoEnum.fromValue(pgResponse.getTipologiaServizio()) 		
-			dettaglio.setDataInizioValidita(this.getCurrentDateCalendar()); 
-	 		dettaglio.setGruppo("unica"); 
-			dettaglio.setIdDeb(documento.getIdentificativoUnivocoVersamento()+documento.getNumeroDocumento()); 
-			dettaglio.setImportoDebito(tributo.getImpTributo().doubleValue() / 100D);
-			dettaglio.setOrdinamento(progressivo); 
-			dettaglio.setCodiceLotto("0112233445"+progressivo);		
-			DatoAccertamentoDto datoAccertamento = new DatoAccertamentoDto();
-			datoAccertamento.setImportoAccertamento(tributo.getImpTributo());
-			datoAccertamento.setCodiceAccertamento(CodiceTipoDebitoEnum.MULTE.getValue());
-			datoAccertamento.setAnnoAccertamento(documento.getAnnoEmissione());
-//			datoAccertamento.setDescrizioneAccertamento(documento);
-			
-			dettaglio.setDatiAccertamento(Arrays.asList(datoAccertamento));
-			dettaglioList.add(dettaglio);
-			progressivo++;
-		}
-		
-		this.setDettaglioDovuto(dettaglioList);
-
-		ContribuenteDto contribuente = new ContribuenteDto();
-		contribuente.setTipoIdentificativoUnivoco(documento.getCodiceFiscale().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
-		contribuente.setCodiceIdentificativoUnivoco(documento.getCodiceFiscale().toUpperCase());
-		// TODO: da aggiungere
-//		contribuente.setCap(null);
-//		contribuente.setCivico(null);
-//		contribuente.setCognome(null);
-//		contribuente.setEmail(null);
-//		contribuente.setIndirizzo(null);
-//		contribuente.localita(null);
-//		contribuente.setNazione(null);
-//		contribuente.setNome(null);
-//		contribuente.setProvincia(null);
-		
-		TestataDovutoDto testata = new TestataDovutoDto(contribuente, documento.getCausale(), documento.getIdentificativoUnivocoVersamento()+documento.getNumeroDocumento()); 
-		this.setTestataDovuto(testata);
 	}
 	
 	public DovutoDto contestoDovuto(ContestoDovutoEnum contestoDovuto) {
