@@ -13,24 +13,33 @@
 
 package io.swagger.client.model;
 
-import java.util.Objects;
-import java.util.Arrays;
-import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.JsonAdapter;
-import com.google.gson.annotations.SerializedName;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Objects;
+
+import com.google.gson.annotations.SerializedName;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * DatoAccertamentoDto
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2023-06-23T07:57:29.055Z")
 public class DatoAccertamentoDto {
-  @SerializedName("annoAccertamento")
+	
+	public DatoAccertamentoDto() {
+		super();
+	}
+
+	public DatoAccertamentoDto(String annoAccertamento, String codiceAccertamento, String descrizioneAccertamento,
+			BigDecimal importoAccertamento) {
+		super();
+		this.annoAccertamento = annoAccertamento;
+		this.codiceAccertamento = codiceAccertamento;
+		this.descrizioneAccertamento = descrizioneAccertamento;
+		this.importoAccertamento = importoAccertamento;
+	}
+
+@SerializedName("annoAccertamento")
   private String annoAccertamento = null;
 
   @SerializedName("codiceAccertamento")

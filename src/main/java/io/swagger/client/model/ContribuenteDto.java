@@ -31,7 +31,8 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "Anagrafica del soggetto contribuente")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2023-06-23T07:57:29.055Z")
 public class ContribuenteDto {
-  @SerializedName("cap")
+
+	@SerializedName("cap")
   private String cap = null;
 
   @SerializedName("civico")
@@ -63,7 +64,29 @@ public class ContribuenteDto {
 
   @SerializedName("ragioneSociale")
   private String ragioneSociale = null;
+  
+  public ContribuenteDto() {
+	super();
+  }
 
+public ContribuenteDto(String cap, String civico, String codiceIdentificativoUnivoco, String cognome, String email,
+			String indirizzo, String localita, String nazione, String nome, String provincia, String ragioneSociale,
+			TipoIdentificativoUnivocoEnum tipoIdentificativoUnivoco) {
+		super();
+		this.cap = cap;
+		this.civico = civico;
+		this.codiceIdentificativoUnivoco = codiceIdentificativoUnivoco;
+		this.cognome = cognome;
+		this.email = email;
+		this.indirizzo = indirizzo;
+		this.localita = localita;
+		this.nazione = nazione;
+		this.nome = nome;
+		this.provincia = provincia;
+		this.ragioneSociale = ragioneSociale;
+		this.tipoIdentificativoUnivoco = tipoIdentificativoUnivoco;
+	}
+  
   /**
    * Gets or Sets tipoIdentificativoUnivoco
    */

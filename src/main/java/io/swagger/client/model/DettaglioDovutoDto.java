@@ -33,8 +33,39 @@ import io.swagger.annotations.ApiModelProperty;
  * DettaglioDovutoDto
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2023-06-23T07:57:29.055Z")
+
 public class DettaglioDovutoDto {
-  @SerializedName("causaleDebito")
+
+	public DettaglioDovutoDto() {
+		super();
+	}
+
+	public DettaglioDovutoDto(String causaleDebito, String codiceIpaCreditore, String codiceLotto,
+			CodiceTipoDebitoEnum codiceTipoDebito, OffsetDateTime dataFineValidita, OffsetDateTime dataInizioValidita,
+			OffsetDateTime dataLimitePagabilita, List<DatoAccertamentoDto> datiAccertamento, String gruppo,
+			String idDeb, Double importoDebito, BigDecimal importoSpeseNotifica, MarcaDaBolloDto marcaDaBollo,
+			Integer ordinamento, List<ParametroDebitoDto> parametriDebito,
+			SpeseNotificaDaAttualizzareEnum speseNotificaDaAttualizzare) {
+		super();
+		this.causaleDebito = causaleDebito;
+		this.codiceIpaCreditore = codiceIpaCreditore;
+		this.codiceLotto = codiceLotto;
+		this.codiceTipoDebito = codiceTipoDebito;
+		this.dataFineValidita = dataFineValidita;
+		this.dataInizioValidita = dataInizioValidita;
+		this.dataLimitePagabilita = dataLimitePagabilita;
+		this.datiAccertamento = datiAccertamento;
+		this.gruppo = gruppo;
+		this.idDeb = idDeb;
+		this.importoDebito = importoDebito;
+		this.importoSpeseNotifica = importoSpeseNotifica;
+		this.marcaDaBollo = marcaDaBollo;
+		this.ordinamento = ordinamento;
+		this.parametriDebito = parametriDebito;
+		this.speseNotificaDaAttualizzare = speseNotificaDaAttualizzare;
+	}
+
+@SerializedName("causaleDebito")
   private String causaleDebito = null;
 
   @SerializedName("codiceIpaCreditore")
