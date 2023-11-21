@@ -24,21 +24,17 @@ import java.util.Objects;
 import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
-import com.esed.payer.archiviocarichi.webservice.integraecdifferito.dati.Anagrafica;
-import com.esed.payer.archiviocarichi.webservice.integraecdifferito.dati.Tributo;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.seda.payer.core.bean.ConfigurazioneBlackBoxPos;
-import com.seda.payer.integraente.webservice.dati.RecuperaDatiBollettinoResponse;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.client.model.ContribuenteDto.TipoIdentificativoUnivocoEnum;
-import io.swagger.client.model.DettaglioDovutoDto.CodiceTipoDebitoEnum;
-import io.swagger.client.model.DettaglioDovutoDto.SpeseNotificaDaAttualizzareEnum;  
+import io.swagger.client.model.DettaglioDovutoDto.CodiceTipoDebitoEnum;  
 
 /**
  * Composto da un’unica testata e la lista dei DettaglioDovuto specifici del
@@ -178,103 +174,9 @@ public class DovutoDto {
 		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, d.getNumeroAvviso(), 1);
 		this.setNumeroAvviso(numeroAvvisoDto);
 	}
-
-	// Archivio Carichi
-	public DovutoDto(RecuperaDatiBollettinoResponse pgResponse, String codiceIpaComune, String codiceIpaProvincia, List<Tributo> listTributi, Anagrafica anagrafica) {
-		this.setContestoDovuto(pgResponse.getFlagMultiBeneficiario() ? ContestoDovutoEnum.MULTIBENEFICIARIO : ContestoDovutoEnum.MONOBENEFICIARIO); 
-		List<DettaglioDovutoDto> dettaglioList = new ArrayList<>();
-		int progressivo = 1;
-		for(Tributo tributo : listTributi) {
-			DettaglioDovutoDto dettaglio = new DettaglioDovutoDto();
-			dettaglio.setCausaleDebito(pgResponse.getCausale());   
-			
-			// TODO: da aggiungere		
-//			dettaglio.setDataLimitePagabilita(null);
-//			dettaglio.setDataFineValidita(null);
-			dettaglio.setSpeseNotificaDaAttualizzare(SpeseNotificaDaAttualizzareEnum.OFF);
-			
-			if(pgResponse.getFlagMultiBeneficiario()) {
-				dettaglio.setCodiceIpaCreditore(progressivo == 1 ? codiceIpaComune : codiceIpaProvincia); 
-			} else {
-				dettaglio.setCodiceIpaCreditore(codiceIpaComune); 
-			}
-			dettaglio.setCodiceTipoDebito(CodiceTipoDebitoEnum.fromValue(pgResponse.getTipologiaServizio())); 	
-			dettaglio.setDataInizioValidita(this.getCurrentDateCalendar()); 
-	 		dettaglio.setGruppo("unica"); 
-			dettaglio.setIdDeb(pgResponse.getIdentificativoUnivocoVersamento()+pgResponse.getIdentificativoBollettino()); 
-			dettaglio.setImportoDebito(tributo.getImpTributo().doubleValue() / 100D);
-			dettaglio.setOrdinamento(progressivo); 
-//			dettaglio.setCodiceLotto("0112233445"+progressivo);			
-			DatoAccertamentoDto datoAccertamento = new DatoAccertamentoDto();
-			datoAccertamento.setImportoAccertamento(BigDecimal.valueOf(tributo.getImpTributo().doubleValue() / 100D));
-			datoAccertamento.setCodiceAccertamento(CodiceTipoDebitoEnum.fromValue(pgResponse.getTipologiaServizio()).getValue());
-			datoAccertamento.setAnnoAccertamento(tributo.getAnnoTributo());			
-			dettaglio.setDatiAccertamento(Arrays.asList(datoAccertamento));
-			
-			dettaglioList.add(dettaglio);
-			progressivo++;
-		}
-		
-		this.setDettaglioDovuto(dettaglioList);
-
-		ContribuenteDto contribuente = new ContribuenteDto();
-		if(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().length() < 16) {
-			contribuente.setRagioneSociale(pgResponse.getAnagraficaBollettino().getIntestatario());
-		}  else {
-//			contribuente.setNome(null);
-			contribuente.setCognome(anagrafica.getDenominazione() != null ? anagrafica.getDenominazione() : null);
-		}
-		contribuente.setTipoIdentificativoUnivoco(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
-		contribuente.setCodiceIdentificativoUnivoco(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().toUpperCase());
-		
-		// TODO: da aggiungere
-//		contribuente.setCap(null);
-//		contribuente.setCivico(null);
-//		contribuente.setNazione(null);
-//		contribuente.setProvincia(null);
-		contribuente.setEmail(anagrafica.getEmail() != null ? anagrafica.getEmail() : null);
-		contribuente.setIndirizzo(anagrafica.getIndirizzoFiscale() != null ? anagrafica.getIndirizzoFiscale() : null);
-		contribuente.localita(anagrafica.getEmail() != null ? anagrafica.getEmail() : null);
-
-		TestataDovutoDto testata = new TestataDovutoDto(contribuente, pgResponse.getCausale(), pgResponse.getIdentificativoUnivocoVersamento() + pgResponse.getIdentificativoBollettino()); 
-		this.setTestataDovuto(testata);
-		
-		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, pgResponse.getIdentificativoBollettino(), 1);
-		this.setNumeroAvviso(numeroAvvisoDto);
-	}
 	
 	private OffsetDateTime getCurrentDateCalendar() {
 		return OffsetDateTime.parse(Calendar.getInstance().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-	}
-
-	// Archivio Carichi
-	public DovutoDto(RecuperaDatiBollettinoResponse pgResponse, Anagrafica anagrafica) {		
-		this.setContestoDovuto(pgResponse.getFlagMultiBeneficiario() ? ContestoDovutoEnum.MULTIBENEFICIARIO : ContestoDovutoEnum.MONOBENEFICIARIO); 
-		ContribuenteDto contribuente = new ContribuenteDto();
-		if(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().length() < 16) {
-			contribuente.setRagioneSociale(pgResponse.getAnagraficaBollettino().getIntestatario());
-		} else {
-//			contribuente.setNome(null);
-			contribuente.setCognome(anagrafica.getDenominazione() != null ? anagrafica.getDenominazione() : null);
-		}
-		contribuente.setTipoIdentificativoUnivoco(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
-		contribuente.setCodiceIdentificativoUnivoco(pgResponse.getAnagraficaBollettino().getCodiceFiscale_PIVA().toUpperCase());
-
-		// TODO: da aggiungere
-//		contribuente.setCap(null);
-//		contribuente.setCivico(null);
-//		contribuente.setNazione(null);
-//		contribuente.setProvincia(null);
-
-		contribuente.setEmail(anagrafica.getEmail() != null ? anagrafica.getEmail() : null);
-		contribuente.setIndirizzo(anagrafica.getIndirizzoFiscale() != null ? anagrafica.getIndirizzoFiscale() : null);
-		contribuente.localita(anagrafica.getEmail() != null ? anagrafica.getEmail() : null);
-		
-		TestataDovutoDto testata = new TestataDovutoDto(contribuente, pgResponse.getCausale(), pgResponse.getIdentificativoUnivocoVersamento()+pgResponse.getAnagraficaBollettino().getNumeroDocumento()); 
-		this.setTestataDovuto(testata);
-		
-		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, pgResponse.getAnagraficaBollettino().getNumeroDocumento(), 1);
-		this.setNumeroAvviso(numeroAvvisoDto);
 	}
 	
 	public DovutoDto contestoDovuto(ContestoDovutoEnum contestoDovuto) {
