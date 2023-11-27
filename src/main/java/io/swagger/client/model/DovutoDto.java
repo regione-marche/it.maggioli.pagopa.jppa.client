@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -174,11 +173,7 @@ public class DovutoDto {
 		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, d.getNumeroAvviso(), 1);
 		this.setNumeroAvviso(numeroAvvisoDto);
 	}
-	
-	private OffsetDateTime getCurrentDateCalendar() {
-		return OffsetDateTime.parse(Calendar.getInstance().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-	}
-	
+
 	public DovutoDto contestoDovuto(ContestoDovutoEnum contestoDovuto) {
 		this.contestoDovuto = contestoDovuto;
 		return this;
