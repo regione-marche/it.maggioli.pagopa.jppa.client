@@ -133,7 +133,7 @@ public class DovutoDto {
 		dettaglio.setDataFineValidita(OffsetDateTime.parse(d.getDataScadenza().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME));  
 		dettaglio.setDataInizioValidita(OffsetDateTime.parse(d.getDataCreazione().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME)); 
  		dettaglio.setGruppo("1"); 
-		dettaglio.setIdDeb(d.getCodiceIdentificativoDominio().trim() + d.getNumeroAvviso().trim()); 
+		dettaglio.setIdDeb(d.getCodiceIdentificativoDominio().trim() + "_" + d.getCodiceIuv().trim()); 
 		dettaglio.setImportoDebito(new Double(d.getImporto()) / 100D);
 		dettaglio.setOrdinamento(1);
 		
@@ -155,19 +155,20 @@ public class DovutoDto {
 		contribuente.setIndirizzo(d.getIndirizzoContribuente() != null ? d.getIndirizzoContribuente() : null);
 		contribuente.setProvincia(d.getProvinciaContribuente() != null ? d.getProvinciaContribuente() : null);
 		
-//		contribuente.setNome(null);    WEB OK | caricaIUV no
-//		contribuente.setCognome(null); WEB OK | caricaIUV no
 //		contribuente.setCivico(null);  WEB no | caricaIUV no
 //		contribuente.setNazione(null); WEB no | caricaIUV no
 //		contribuente.setEmail(null);   WEB no | caricaIUV no
 		
-		if(d.getCodiceFiscale().length() < 16) {
+		if(d.getCodiceFiscale().length() >= 16 && d.getDenominazioneDebitore() != null) {
+			contribuente.setCognome(d.getDenominazioneDebitore());
+		}
+		if(d.getCodiceFiscale().length() < 16 && d.getDenominazioneDebitore() != null) {
 			contribuente.setRagioneSociale(d.getDenominazioneDebitore());
 		}
 		contribuente.setTipoIdentificativoUnivoco(d.getCodiceFiscale().length() < 16 ? TipoIdentificativoUnivocoEnum.GIURID : TipoIdentificativoUnivocoEnum.FIS);
 		contribuente.setCodiceIdentificativoUnivoco(d.getCodiceFiscale());
 
-		TestataDovutoDto testata = new TestataDovutoDto(contribuente, d.getCausaleServizio(), d.getCodiceIdentificativoDominio().trim() + d.getNumeroAvviso().trim()); 
+		TestataDovutoDto testata = new TestataDovutoDto(contribuente, d.getCausaleServizio(), d.getCodiceIdentificativoDominio().trim() + "_" + d.getCodiceIuv().trim()); 
 		this.setTestataDovuto(testata);
 		
 		NumeroAvvisoDto numeroAvvisoDto = new NumeroAvvisoDto(true, d.getNumeroAvviso(), 1);
