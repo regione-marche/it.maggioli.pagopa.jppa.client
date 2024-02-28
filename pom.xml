@@ -5,7 +5,7 @@
     <artifactId>it.maggioli.pagopa.jppa.client</artifactId>
     <packaging>jar</packaging>
     <name>it.maggioli.pagopa.jppa.client</name>
-    <version>1.1.0</version>
+    <version>1.2.1</version>
     <description>it.maggioli.pagopa.jppa.client client di chiamata verso JPPA</description>
     <!--<scm>
         <connection>scm:git:git@github.com:swagger-api/swagger-codegen.git</connection>
