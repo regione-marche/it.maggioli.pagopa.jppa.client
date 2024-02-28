@@ -78,7 +78,8 @@ import okio.Okio;
 public class ApiClient {
 
 //    private String basePath = "https://collaudopagopa.comune-online.it/jcitygov-pagopa/api";
-    private String basePath = "https://pagopa-staging.maggioli.cloud/jcitygov-pagopa/api";
+//    private String basePath = "https://pagopa-staging.maggioli.cloud/jcitygov-pagopa/api";
+      private String basePath = "https://aar.pagopa-dev.maggioli.cloud/jcitygov-pagopa/api";
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private String tempFolderPath = null;
