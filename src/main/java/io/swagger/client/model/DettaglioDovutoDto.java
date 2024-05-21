@@ -41,7 +41,7 @@ public class DettaglioDovutoDto {
 	}
 
 	public DettaglioDovutoDto(String causaleDebito, String codiceIpaCreditore, String codiceLotto,
-			CodiceTipoDebitoEnum codiceTipoDebito, OffsetDateTime dataFineValidita, OffsetDateTime dataInizioValidita,
+			String codiceTipoDebito, OffsetDateTime dataFineValidita, OffsetDateTime dataInizioValidita,
 			OffsetDateTime dataLimitePagabilita, List<DatoAccertamentoDto> datiAccertamento, String gruppo,
 			String idDeb, Double importoDebito, BigDecimal importoSpeseNotifica, MarcaDaBolloDto marcaDaBollo,
 			Integer ordinamento, List<ParametroDebitoDto> parametriDebito,
@@ -179,8 +179,10 @@ public class DettaglioDovutoDto {
     }
   }
 
-  @SerializedName("codiceTipoDebito")
-  private CodiceTipoDebitoEnum codiceTipoDebito = null;
+//  @SerializedName("codiceTipoDebito")
+//  private CodiceTipoDebitoEnum codiceTipoDebito = null;
+
+  private String codiceTipoDebito = null;
 
   @SerializedName("dataFineValidita")
   private OffsetDateTime dataFineValidita = null;
@@ -319,24 +321,37 @@ public class DettaglioDovutoDto {
     this.codiceLotto = codiceLotto;
   }
 
-  public DettaglioDovutoDto codiceTipoDebito(CodiceTipoDebitoEnum codiceTipoDebito) {
+//  public DettaglioDovutoDto codiceTipoDebito(CodiceTipoDebitoEnum codiceTipoDebito) {
+//    this.codiceTipoDebito = codiceTipoDebito;
+//    return this;
+//  }
+
+  /**
+   * Codice che raggruppa tutte le parametrizzazioni semanticamente omogeneo di debiti. Identifica tipicamente un tributo o più in generale un onere che l’utente finale ha maturato nei confronti della pubblica amministrazione, max 1000 caratteri
+   * @return codiceTipoDebito
+   **/
+  public DettaglioDovutoDto codiceTipoDebito(String codiceTipoDebito) {
     this.codiceTipoDebito = codiceTipoDebito;
     return this;
   }
 
-   /**
-   * Codice che raggruppa tutte le parametrizzazioni semanticamente omogeneo di debiti. Identifica tipicamente un tributo o più in generale un onere che l’utente finale ha maturato nei confronti della pubblica amministrazione, max 1000 caratteri
-   * @return codiceTipoDebito
-  **/
-  @ApiModelProperty(example = "MULTE", required = true, value = "Codice che raggruppa tutte le parametrizzazioni semanticamente omogeneo di debiti. Identifica tipicamente un tributo o più in generale un onere che l’utente finale ha maturato nei confronti della pubblica amministrazione, max 1000 caratteri")
-  public CodiceTipoDebitoEnum getCodiceTipoDebito() {
-    return codiceTipoDebito;
-  }
 
-  public void setCodiceTipoDebito(CodiceTipoDebitoEnum codiceTipoDebito) {
+//  @ApiModelProperty(example = "MULTE", required = true, value = "Codice che raggruppa tutte le parametrizzazioni semanticamente omogeneo di debiti. Identifica tipicamente un tributo o più in generale un onere che l’utente finale ha maturato nei confronti della pubblica amministrazione, max 1000 caratteri")
+//  public CodiceTipoDebitoEnum getCodiceTipoDebito() {
+//    return codiceTipoDebito;
+//  }
+//
+//  public void setCodiceTipoDebito(CodiceTipoDebitoEnum codiceTipoDebito) {
+//    this.codiceTipoDebito = codiceTipoDebito;
+//  }
+
+  public void setCodiceTipoDebito(String codiceTipoDebito) {
     this.codiceTipoDebito = codiceTipoDebito;
   }
 
+  public String getCodiceTipoDebito() {
+    return codiceTipoDebito;
+  }
   public DettaglioDovutoDto dataFineValidita(OffsetDateTime dataFineValidita) {
     this.dataFineValidita = dataFineValidita;
     return this;

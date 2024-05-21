@@ -129,7 +129,7 @@ public class DovutoDto {
 //		dettaglio.setDataLimitePagabilita(null);
 		dettaglio.setCausaleDebito(d.getCausaleServizio());  
 		dettaglio.setCodiceIpaCreditore(codiceIpa); 
-		dettaglio.setCodiceTipoDebito(CodiceTipoDebitoEnum.fromValue(d.getCodiceTipologiaServizio())); 		
+		dettaglio.setCodiceTipoDebito(d.getCodiceTipologiaServizio());
 		dettaglio.setDataFineValidita(OffsetDateTime.parse(d.getDataScadenza().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME));  
 		dettaglio.setDataInizioValidita(OffsetDateTime.parse(d.getDataCreazione().getTime().toInstant().atOffset(ZoneOffset.UTC).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME)); 
  		dettaglio.setGruppo("1"); 
@@ -138,7 +138,7 @@ public class DovutoDto {
 		dettaglio.setOrdinamento(1);
 		
 		DatoAccertamentoDto datoAccertamento = new DatoAccertamentoDto();
-		datoAccertamento.setCodiceAccertamento(CodiceTipoDebitoEnum.fromValue(d.getCodiceTipologiaServizio()).getValue()); 
+		datoAccertamento.setCodiceAccertamento(d.getCodiceTipologiaServizio());
 		datoAccertamento.setImportoAccertamento(BigDecimal.valueOf(d.getImporto() / 100D));
 		
 		// TODO: da aggiungere
